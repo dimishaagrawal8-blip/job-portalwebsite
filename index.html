@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NaukriHub - Job Portal</title>
+  <style>
+/* ============================================
+   NaukriHub - Job Portal styles
+   ============================================ */
+
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --muted: #5f6b7a;
+  --line: #dde3ea;
+  --primary: #1f4fd1;
+  --primary-dark: #163a9e;
+  --primary-soft: #e8eefc;
+  --accent: #f2a516;
+  --green: #1d7a46;
+  --green-soft: #e3f4ea;
+  --red: #b42318;
+  --red-soft: #fdebe9;
+  --amber: #8a5a00;
+  --amber-soft: #fff4dc;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(20, 30, 50, 0.06), 0 4px 14px rgba(20, 30, 50, 0.05);
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+
+.container {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+main.container { flex: 1; padding-top: 24px; padding-bottom: 48px; }
+
+.loading { color: var(--muted); }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topbar-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  color: var(--ink);
+}
+.brand:hover { text-decoration: none; }
+.brand b { color: var(--primary); }
+.brand-mark {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nav a, .nav button {
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.nav a:hover, .nav button:hover { background: var(--primary-soft); text-decoration: none; }
+.nav a.active { color: var(--primary); font-weight: 600; }
+.nav .who { font-size: 13px; color: var(--muted); padding: 0 6px; }
+
+/* ---------- Buttons & forms ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+}
+.btn:hover { background: var(--primary-dark); text-decoration: none; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn.outline { background: transparent; color: var(--primary); }
+.btn.outline:hover { background: var(--primary-soft); }
+.btn.danger { background: transparent; color: var(--red); border-color: var(--red); }
+.btn.danger:hover { background: var(--red-soft); }
+.btn.small { padding: 6px 12px; font-size: 13px; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 13px; font-weight: 600; color: var(--muted); }
+input, select, textarea {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+}
+textarea { resize: vertical; min-height: 110px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.form-grid .full { grid-column: 1 / -1; }
+
+.error-msg {
+  background: var(--red-soft);
+  color: var(--red);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.error-msg:empty { display: none; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Hero / search ---------- */
+.hero {
+  background: linear-gradient(135deg, #1f4fd1 0%, #2b63e6 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 32px 28px;
+  margin-bottom: 24px;
+}
+.hero h1 { font-size: 30px; margin-bottom: 6px; }
+.hero p { margin: 0 0 18px; opacity: 0.9; }
+.search {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr auto;
+  gap: 10px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+}
+.search input, .search select { border-color: transparent; background: var(--bg); }
+.stats {
+  display: flex;
+  gap: 28px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.stats div { font-size: 13px; opacity: 0.9; }
+.stats b { display: block; font-size: 22px; opacity: 1; }
+
+/* ---------- Job list ---------- */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.section-head h2 { font-size: 20px; }
+.muted { color: var(--muted); font-size: 14px; }
+
+.job-list { display: grid; gap: 12px; }
+.job {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 14px;
+  align-items: start;
+}
+.logo {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+.job h3 { font-size: 17px; margin-bottom: 2px; }
+.job h3 a { color: var(--ink); }
+.job .company { color: var(--muted); font-size: 14px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.tag.type { background: var(--primary-soft); border-color: transparent; color: var(--primary); font-weight: 600; }
+.job-side { text-align: right; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.job-side .date { font-size: 12px; color: var(--muted); }
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+
+/* ---------- Job details ---------- */
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+.detail-head { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+.detail-head h1 { font-size: 24px; }
+.info-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.info-list div { background: var(--bg); padding: 10px 12px; border-radius: 8px; }
+.info-list span { display: block; font-size: 12px; color: var(--muted); }
+.description { white-space: pre-line; }
+.back { display: inline-block; margin-bottom: 14px; font-size: 14px; }
+
+/* ---------- Auth pages ---------- */
+.auth {
+  max-width: 440px;
+  margin: 20px auto;
+}
+.auth h1 { font-size: 24px; margin-bottom: 4px; }
+.auth form { display: grid; gap: 14px; margin-top: 18px; }
+.role-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.role-pick label {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.role-pick input { width: auto; }
+.demo-box {
+  margin-top: 16px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+/* ---------- Dashboard ---------- */
+.dash-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.dash-head h1 { font-size: 24px; }
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.summary .card { padding: 14px 16px; }
+.summary b { font-size: 24px; display: block; }
+.summary span { font-size: 13px; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+
+.status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.status.Pending { background: var(--amber-soft); color: var(--amber); }
+.status.Shortlisted { background: var(--primary-soft); color: var(--primary); }
+.status.Selected { background: var(--green-soft); color: var(--green); }
+.status.Rejected { background: var(--red-soft); color: var(--red); }
+
+.applicant { display: grid; gap: 8px; }
+.applicant + .applicant { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+.applicant-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.applicant p { margin: 0; }
+.applicant .note { background: var(--bg); padding: 10px 12px; border-radius: 8px; font-size: 14px; }
+.applicant select { width: auto; padding: 6px 10px; font-size: 13px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  max-width: calc(100% - 32px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--red); }
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  padding: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer p { margin: 0; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--primary); cursor: pointer; text-decoration: underline; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 760px) {
+  .search { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .job { grid-template-columns: 40px 1fr; }
+  .logo { width: 40px; height: 40px; font-size: 16px; }
+  .job-side { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
+  .hero { padding: 24px 18px; }
+  .hero h1 { font-size: 24px; }
+  .info-list { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition: none; }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- ===== Top navigation ===== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#/" class="brand">
+        <span class="brand-mark">N</span>
+        <span>Naukri<b>Hub</b></span>
+      </a>
+      <nav class="nav" id="nav">
+        <!-- filled by app.js depending on login -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Page content (changes with the URL #/...) ===== -->
+  <main id="app" class="container">
+    <p class="loading">Loading...</p>
+  </main>
+
+  <!-- ===== Toast message ===== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>NaukriHub Job Portal &middot; HTML, CSS &amp; JavaScript &middot; Data is saved in your browser. <button type="button" id="resetBtn" class="linkbtn">Reset demo data</button></p>
+    </div>
+  </footer>
+
+  <script>
+/* =====================================================
+   BACKEND (runs inside the browser)
+   - Works like a server API: register, login, jobs,
+     applications, status update
+   - Data is saved in the browser's localStorage, so the
+     site works on GitHub Pages without any server
+   ===================================================== */
+
+const Backend = (function () {
+  const DB_KEY = "naukrihub_db_v1";
+  const DAY = 24 * 60 * 60 * 1000;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const JOB_TYPES = ["Full-time", "Part-time", "Internship", "Contract"];
+  const STATUSES = ["Pending", "Shortlisted", "Selected", "Rejected"];
+  let memoryDb = null; // used only if localStorage is blocked
+
+  function newId() {
+    const bytes = new Uint8Array(6);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // Password hashing with SHA-256 + salt
+  async function sha256(text) {
+    if (window.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, "0")).join("");
+    }
+    // Fallback for very old browsers
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < text.length; i++) {
+      const c = text.charCodeAt(i);
+      h1 = Math.imul(h1 ^ c, 2654435761);
+      h2 = Math.imul(h2 ^ c, 1597334677);
+    }
+    return (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16);
+  }
+  async function hashPassword(password, salt) {
+    salt = salt || newId();
+    return salt + ":" + (await sha256(salt + password));
+  }
+  async function checkPassword(password, stored) {
+    const salt = stored.split(":")[0];
+    return (await hashPassword(password, salt)) === stored;
+  }
+
+  /* ---------- Sample data (created on first visit) ---------- */
+  async function seed() {
+    const now = Date.now();
+    const employerId = newId(), employer2Id = newId(), seekerId = newId();
+    const demoPass = await hashPassword("demo123");
+    const jobs = [
+      { title: "Junior Web Developer", company: "Pinkcity Tech Solutions", location: "Jaipur", type: "Full-time", salary: "3 - 4.5 LPA", experience: "0-1 years", skills: "HTML, CSS, JavaScript", description: "Build and maintain responsive web pages for client projects. Work with the design team to turn mockups into working pages and fix layout bugs across browsers.", employerId },
+      { title: "Backend Developer (Node.js)", company: "Pinkcity Tech Solutions", location: "Jaipur", type: "Full-time", salary: "5 - 7 LPA", experience: "1-3 years", skills: "Node.js, REST APIs, MySQL", description: "Design REST APIs, write database queries and keep services fast and reliable. You will review code and help junior developers.", employerId },
+      { title: "Data Entry Operator", company: "Rajputana Services", location: "Jaipur", type: "Part-time", salary: "12,000 - 15,000 / month", experience: "Fresher", skills: "MS Excel, Typing 30 WPM", description: "Enter and verify customer records in our system. Morning shift, 4 hours a day. Basic computer knowledge needed.", employerId: employer2Id },
+      { title: "Frontend Intern", company: "Rajputana Services", location: "Remote", type: "Internship", salary: "8,000 / month stipend", experience: "Students", skills: "HTML, CSS, JavaScript", description: "3-month internship. Help build dashboards and landing pages. Good chance of a full-time offer after the internship.", employerId: employer2Id },
+      { title: "Java Developer", company: "Pinkcity Tech Solutions", location: "Pune", type: "Full-time", salary: "6 - 9 LPA", experience: "2-4 years", skills: "Java, Spring Boot, SQL", description: "Work on banking software modules. Write clean, tested code and take part in design discussions.", employerId },
+      { title: "Content Writer", company: "Rajputana Services", location: "Remote", type: "Contract", salary: "500 per article", experience: "0-2 years", skills: "English writing, SEO basics", description: "Write blog posts and product descriptions. 8 to 10 articles per week. Samples of past writing required.", employerId: employer2Id }
+    ].map((j, i) => Object.assign({ id: newId() }, j, { createdAt: now - i * DAY, open: true }));
+    return {
+      users: [
+        { id: employerId, name: "Ravi Sharma", email: "employer@demo.com", password: demoPass, role: "employer", company: "Pinkcity Tech Solutions", createdAt: now },
+        { id: employer2Id, name: "Meena Gupta", email: "hr@demo.com", password: demoPass, role: "employer", company: "Rajputana Services", createdAt: now },
+        { id: seekerId, name: "Amit Verma", email: "seeker@demo.com", password: demoPass, role: "seeker", company: "", createdAt: now }
+      ],
+      jobs: jobs,
+      applications: [
+        { id: newId(), jobId: jobs[0].id, seekerId: seekerId, phone: "9876543210", coverLetter: "I have built 5 projects in HTML, CSS and JavaScript and I am eager to learn.", status: "Pending", createdAt: now - DAY }
+      ],
+      sessions: {}
+    };
+  }
+
+  /* ---------- Load / save database ---------- */
+  async function loadDb() {
+    if (memoryDb) return memoryDb;
+    let raw = null;
+    try { raw = localStorage.getItem(DB_KEY); } catch (e) { raw = null; }
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        if (data && data.users && data.jobs && data.applications) {
+          data.sessions = data.sessions || {};
+          memoryDb = data;
+          return data;
+        }
+      } catch (e) { /* broken data: make fresh below */ }
+    }
+    memoryDb = await seed();
+    saveDb();
+    return memoryDb;
+  }
+  function saveDb() {
+    try { localStorage.setItem(DB_KEY, JSON.stringify(memoryDb)); } catch (e) { /* storage blocked: keep in memory */ }
+  }
+  async function resetDb() {
+    try { localStorage.removeItem(DB_KEY); } catch (e) { /* ignore */ }
+    memoryDb = null;
+    await loadDb();
+  }
+
+  /* ---------- Small helpers ---------- */
+  function clean(value, max) {
+    return String(value == null ? "" : value).trim().slice(0, max || 200);
+  }
+  function publicUser(u) {
+    return { id: u.id, name: u.name, email: u.email, role: u.role, company: u.company };
+  }
+  function ok(data, status) { return { status: status || 200, data: data }; }
+  function fail(status, message) { return { status: status, data: { error: message } }; }
+  function copy(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+  /* ---------- The API (same routes as a real server) ---------- */
+  async function request(method, path, body, token) {
+    const db = await loadDb();
+    body = body || {};
+    const url = new URL("http://local/api" + path);
+    const parts = url.pathname.split("/").filter(Boolean); // ["api", ...]
+    const p = url.pathname;
+    const user = token && db.sessions[token] ? db.users.find(u => u.id === db.sessions[token]) || null : null;
+    const withCount = job => Object.assign({}, job, { applicants: db.applications.filter(a => a.jobId === job.id).length });
+
+    // POST /api/register
+    if (method === "POST" && p === "/api/register") {
+      const name = clean(body.name, 60);
+      const email = clean(body.email, 100).toLowerCase();
+      const password = String(body.password || "");
+      const role = body.role === "employer" ? "employer" : "seeker";
+      const company = clean(body.company, 80);
+      if (name.length < 2) return fail(400, "Enter your full name.");
+      if (!EMAIL_RE.test(email)) return fail(400, "Enter a valid email address.");
+      if (password.length < 6) return fail(400, "Password must be at least 6 characters.");
+      if (role === "employer" && company.length < 2) return fail(400, "Enter your company name.");
+      if (db.users.some(u => u.email === email)) return fail(409, "An account with this email already exists. Please log in.");
+      const nu = { id: newId(), name: name, email: email, password: await hashPassword(password), role: role, company: role === "employer" ? company : "", createdAt: Date.now() };
+      db.users.push(nu);
+      const t = newId() + newId() + newId();
+      db.sessions[t] = nu.id;
+      saveDb();
+      return ok({ token: t, user: publicUser(nu) }, 201);
+    }
+
+    // POST /api/login
+    if (method === "POST" && p === "/api/login") {
+      const email = clean(body.email, 100).toLowerCase();
+      const found = db.users.find(u => u.email === email);
+      if (!found || !(await checkPassword(String(body.password || ""), found.password))) {
+        return fail(401, "Wrong email or password.");
+      }
+      const t = newId() + newId() + newId();
+      db.sessions[t] = found.id;
+      saveDb();
+      return ok({ token: t, user: publicUser(found) });
+    }
+
+    // POST /api/logout
+    if (method === "POST" && p === "/api/logout") {
+      if (token && db.sessions[token]) { delete db.sessions[token]; saveDb(); }
+      return ok({ ok: true });
+    }
+
+    // GET /api/me
+    if (method === "GET" && p === "/api/me") {
+      if (!user) return fail(401, "Please log in.");
+      return ok({ user: publicUser(user) });
+    }
+
+    // GET /api/stats
+    if (method === "GET" && p === "/api/stats") {
+      const open = db.jobs.filter(j => j.open);
+      return ok({
+        jobs: open.length,
+        companies: new Set(open.map(j => j.company)).size,
+        seekers: db.users.filter(u => u.role === "seeker").length,
+        applications: db.applications.length
+      });
+    }
+
+    // GET /api/jobs?q=&location=&type=
+    if (method === "GET" && p === "/api/jobs") {
+      const q = clean(url.searchParams.get("q"), 100).toLowerCase();
+      const loc = clean(url.searchParams.get("location"), 60).toLowerCase();
+      const type = clean(url.searchParams.get("type"), 30);
+      let list = db.jobs.filter(j => j.open);
+      if (q) list = list.filter(j => (j.title + " " + j.company + " " + j.skills + " " + j.description).toLowerCase().includes(q));
+      if (loc) list = list.filter(j => j.location.toLowerCase().includes(loc));
+      if (type) list = list.filter(j => j.type === type);
+      list.sort((a, b) => b.createdAt - a.createdAt);
+      return ok({ jobs: list.map(withCount) });
+    }
+
+    // POST /api/jobs (employer)
+    if (method === "POST" && p === "/api/jobs") {
+      if (!user) return fail(401, "Please log in.");
+      if (user.role !== "employer") return fail(403, "Only employers can post jobs.");
+      const job = {
+        id: newId(),
+        title: clean(body.title, 80),
+        company: user.company,
+        location: clean(body.location, 60),
+        type: JOB_TYPES.includes(body.type) ? body.type : "Full-time",
+        salary: clean(body.salary, 50) || "Not disclosed",
+        experience: clean(body.experience, 40) || "Any",
+        skills: clean(body.skills, 200),
+        description: clean(body.description, 3000),
+        employerId: user.id,
+        createdAt: Date.now(),
+        open: true
+      };
+      if (job.title.length < 3) return fail(400, "Enter a job title (at least 3 characters).");
+      if (job.location.length < 2) return fail(400, "Enter the job location.");
+      if (job.description.length < 20) return fail(400, "Write a job description (at least 20 characters).");
+      db.jobs.push(job);
+      saveDb();
+      return ok({ job: withCount(job) }, 201);
+    }
+
+    // /api/jobs/:id ...
+    if (parts[1] === "jobs" && parts[2]) {
+      const job = db.jobs.find(j => j.id === parts[2]);
+      if (!job) return fail(404, "Job not found.");
+
+      if (method === "GET" && parts.length === 3) {
+        const applied = !!(user && user.role === "seeker" && db.applications.some(a => a.jobId === job.id && a.seekerId === user.id));
+        return ok({ job: withCount(job), applied: applied });
+      }
+
+      if (method === "DELETE" && parts.length === 3) {
+        if (!user) return fail(401, "Please log in.");
+        if (job.employerId !== user.id) return fail(403, "You can only remove your own jobs.");
+        db.jobs = db.jobs.filter(j => j.id !== job.id);
+        db.applications = db.applications.filter(a => a.jobId !== job.id);
+        saveDb();
+        return ok({ ok: true });
+      }
+
+      if (method === "POST" && parts[3] === "apply") {
+        if (!user) return fail(401, "Please log in to apply.");
+        if (user.role !== "seeker") return fail(403, "Only job seekers can apply.");
+        if (db.applications.some(a => a.jobId === job.id && a.seekerId === user.id)) return fail(409, "You have already applied for this job.");
+        const phone = clean(body.phone, 15);
+        const coverLetter = clean(body.coverLetter, 2000);
+        if (!/^[0-9]{10}$/.test(phone)) return fail(400, "Enter a 10-digit phone number.");
+        if (coverLetter.length < 10) return fail(400, "Write a short note about yourself (at least 10 characters).");
+        const a = { id: newId(), jobId: job.id, seekerId: user.id, phone: phone, coverLetter: coverLetter, status: "Pending", createdAt: Date.now() };
+        db.applications.push(a);
+        saveDb();
+        return ok({ application: copy(a) }, 201);
+      }
+
+      if (method === "GET" && parts[3] === "applications") {
+        if (!user) return fail(401, "Please log in.");
+        if (job.employerId !== user.id) return fail(403, "You can only see applicants for your own jobs.");
+        const list = db.applications.filter(a => a.jobId === job.id)
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map(a => {
+            const s = db.users.find(u => u.id === a.seekerId);
+            return Object.assign({}, a, { seekerName: s ? s.name : "Unknown", seekerEmail: s ? s.email : "" });
+          });
+        return ok({ job: withCount(job), applications: list });
+      }
+    }
+
+    // PATCH /api/applications/:id
+    if (method === "PATCH" && parts[1] === "applications" && parts[2]) {
+      if (!user) return fail(401, "Please log in.");
+      const a = db.applications.find(x => x.id === parts[2]);
+      if (!a) return fail(404, "Application not found.");
+      const job = db.jobs.find(j => j.id === a.jobId);
+      if (!job || job.employerId !== user.id) return fail(403, "Not allowed.");
+      if (!STATUSES.includes(body.status)) return fail(400, "Invalid status.");
+      a.status = body.status;
+      saveDb();
+      return ok({ application: copy(a) });
+    }
+
+    // GET /api/my/applications (seeker)
+    if (method === "GET" && p === "/api/my/applications") {
+      if (!user) return fail(401, "Please log in.");
+      const list = db.applications.filter(a => a.seekerId === user.id)
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .map(a => {
+          const job = db.jobs.find(j => j.id === a.jobId);
+          return Object.assign({}, a, { jobTitle: job ? job.title : "(job removed)", company: job ? job.company : "", location: job ? job.location : "" });
+        });
+      return ok({ applications: list });
+    }
+
+    // GET /api/my/jobs (employer)
+    if (method === "GET" && p === "/api/my/jobs") {
+      if (!user) return fail(401, "Please log in.");
+      if (user.role !== "employer") return fail(403, "Only employers have posted jobs.");
+      const list = db.jobs.filter(j => j.employerId === user.id).sort((a, b) => b.createdAt - a.createdAt).map(withCount);
+      return ok({ jobs: list });
+    }
+
+    return fail(404, "API route not found.");
+  }
+
+  return { request: request, reset: resetDb };
+})();
+
+</script>
+<script>
+/* ============================================
+   NaukriHub - Job Portal frontend (JavaScript)
+   Talks to the backend module (backend.js part below/above)
+   Pages change with the URL hash: #/login, #/job/ID ...
+   ============================================ */
+
+const app = document.getElementById("app");
+const nav = document.getElementById("nav");
+const toastBox = document.getElementById("toast");
+
+let currentUser = null;
+
+/* ---------- Helpers ---------- */
+
+function getToken() {
+  try { return localStorage.getItem("token") || ""; } catch (e) { return ""; }
+}
+function setToken(token) {
+  try {
+    if (token) localStorage.setItem("token", token);
+    else localStorage.removeItem("token");
+  } catch (e) { /* storage blocked: stay logged in for this tab only */ }
+}
+
+// Call the backend API. Returns JSON or throws an Error with the message.
+async function api(path, options) {
+  options = options || {};
+  const res = await Backend.request(options.method || "GET", path, options.body, getToken());
+  if (res.status >= 400) throw new Error(res.data.error || "Something went wrong.");
+  return res.data;
+}
+
+// Escape text before putting it into HTML (prevents broken pages / XSS)
+function esc(text) {
+  return String(text == null ? "" : text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function timeAgo(ms) {
+  const diff = Date.now() - ms;
+  const day = 24 * 60 * 60 * 1000;
+  if (diff < 60 * 60 * 1000) return "Just now";
+  if (diff < day) return Math.floor(diff / (60 * 60 * 1000)) + " hours ago";
+  const days = Math.floor(diff / day);
+  return days === 1 ? "1 day ago" : days + " days ago";
+}
+
+function initials(name) {
+  return String(name || "?").split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+}
+
+let toastTimer = null;
+function toast(message, isError) {
+  toastBox.textContent = message;
+  toastBox.className = "toast show" + (isError ? " error" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toastBox.className = "toast"; }, 2800);
+}
+
+function go(hash) {
+  if (location.hash === hash) router();
+  else location.hash = hash;
+}
+
+/* ---------- Navigation bar ---------- */
+
+function renderNav() {
+  const page = location.hash || "#/";
+  const link = (href, text) =>
+    `<a href="${href}" class="${page === href ? "active" : ""}">${text}</a>`;
+  let html = link("#/", "Find Jobs");
+  if (!currentUser) {
+    html += link("#/login", "Login");
+    html += `<a href="#/register" class="btn small">Register</a>`;
+  } else {
+    if (currentUser.role === "employer") html += link("#/post-job", "Post a Job");
+    html += link("#/dashboard", "Dashboard");
+    html += `<span class="who">Hi, ${esc(currentUser.name.split(" ")[0])}</span>`;
+    html += `<button type="button" id="logoutBtn">Logout</button>`;
+  }
+  nav.innerHTML = html;
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) logoutBtn.addEventListener("click", logout);
+}
+
+async function logout() {
+  try { await api("/logout", { method: "POST" }); } catch (e) { /* ignore */ }
+  setToken("");
+  currentUser = null;
+  toast("You are logged out.");
+  go("#/");
+}
+
+/* ---------- Job card (used on home page) ---------- */
+
+function jobCard(job) {
+  return `
+    <article class="card job">
+      <div class="logo">${esc(initials(job.company))}</div>
+      <div>
+        <h3><a href="#/job/${job.id}">${esc(job.title)}</a></h3>
+        <div class="company">${esc(job.company)} &middot; ${esc(job.location)}</div>
+        <div class="tags">
+          <span class="tag type">${esc(job.type)}</span>
+          <span class="tag">${esc(job.salary)}</span>
+          <span class="tag">${esc(job.experience)}</span>
+        </div>
+      </div>
+      <div class="job-side">
+        <span class="date">${timeAgo(job.createdAt)}</span>
+        <a href="#/job/${job.id}" class="btn small outline">View</a>
+      </div>
+    </article>`;
+}
+
+/* ---------- PAGE: Home (search + job list) ---------- */
+
+async function pageHome() {
+  app.innerHTML = `
+    <section class="hero">
+      <h1>Find your next job</h1>
+      <p>Search jobs from companies near you and apply in one click.</p>
+      <form class="search" id="searchForm">
+        <input id="q" placeholder="Job title, skill or company" aria-label="Keyword">
+        <input id="loc" placeholder="Location (e.g. Jaipur)" aria-label="Location">
+        <select id="type" aria-label="Job type">
+          <option value="">All job types</option>
+          <option>Full-time</option>
+          <option>Part-time</option>
+          <option>Internship</option>
+          <option>Contract</option>
+        </select>
+        <button class="btn" type="submit">Search</button>
+      </form>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <div class="section-head">
+      <h2>Latest jobs</h2>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="job-list" id="jobList"><p class="loading">Loading jobs...</p></div>
+  `;
+
+  try {
+    const s = await api("/stats");
+    document.getElementById("stats").innerHTML = `
+      <div><b>${s.jobs}</b>Open jobs</div>
+      <div><b>${s.companies}</b>Companies</div>
+      <div><b>${s.seekers}</b>Job seekers</div>
+      <div><b>${s.applications}</b>Applications</div>`;
+  } catch (e) { /* stats are optional */ }
+
+  async function loadJobs() {
+    const q = document.getElementById("q").value.trim();
+    const loc = document.getElementById("loc").value.trim();
+    const type = document.getElementById("type").value;
+    const params = new URLSearchParams({ q: q, location: loc, type: type });
+    const list = document.getElementById("jobList");
+    try {
+      const data = await api("/jobs?" + params.toString());
+      document.getElementById("count").textContent = data.jobs.length + " job(s) found";
+      list.innerHTML = data.jobs.length
+        ? data.jobs.map(jobCard).join("")
+        : `<div class="card empty">No jobs match your search. Try a different keyword or location.</div>`;
+    } catch (e) {
+      list.innerHTML = `<div class="card empty">${esc(e.message)}</div>`;
+    }
+  }
+
+  document.getElementById("searchForm").addEventListener("submit", e => {
+    e.preventDefault();
+    loadJobs();
+  });
+  loadJobs();
+}
+
+/* ---------- PAGE: Job details + apply ---------- */
+
+async function pageJob(id) {
+  app.innerHTML = `<p class="loading">Loading job...</p>`;
+  let data;
+  try {
+    data = await api("/jobs/" + encodeURIComponent(id));
+  } catch (e) {
+    app.innerHTML = `<a href="#/" class="back">&larr; Back to jobs</a><div class="card empty">${esc(e.message)}</div>`;
+    return;
+  }
+  const job = data.job;
+
+  let applyBox;
+  if (!currentUser) {
+    applyBox = `
+      <h3>Apply for this job</h3>
+      <p class="muted">Log in as a job seeker to apply.</p>
+      <a class="btn" href="#/login">Login to apply</a>
+      <p class="muted">New here? <a href="#/register">Create an account</a></p>`;
+  } else if (currentUser.role === "employer") {
+    applyBox = job.employerId === currentUser.id
+      ? `<h3>Your job post</h3>
+         <p class="muted">${job.applicants} application(s) received.</p>
+         <a class="btn" href="#/applicants/${job.id}">View applicants</a>`
+      : `<h3>Employer account</h3><p class="muted">Employers cannot apply for jobs. Log in with a job seeker account to apply.</p>`;
+  } else if (data.applied) {
+    applyBox = `<h3>Applied</h3><p class="muted">You have already applied for this job. Track it in your dashboard.</p>
+      <a class="btn outline" href="#/dashboard">Go to dashboard</a>`;
+  } else {
+    applyBox = `
+      <h3>Apply for this job</h3>
+      <form id="applyForm" style="display:grid;gap:12px;margin-top:12px">
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" required>
+        </div>
+        <div class="field">
+          <label for="cover">Why are you a good fit?</label>
+          <textarea id="cover" placeholder="Tell the employer about your skills and experience" required></textarea>
+        </div>
+        <p class="error-msg" id="applyError"></p>
+        <button class="btn" type="submit">Submit application</button>
+      </form>`;
+  }
+
+  app.innerHTML = `
+    <a href="#/" class="back">&larr; Back to jobs</a>
+    <div class="detail-grid">
+      <section class="card">
+        <div class="detail-head">
+          <div class="logo">${esc(initials(job.company))}</div>
+          <div>
+            <h1>${esc(job.title)}</h1>
+            <div class="muted">${esc(job.company)} &middot; ${esc(job.location)}</div>
+          </div>
+        </div>
+        <div class="tags"><span class="tag type">${esc(job.type)}</span><span class="tag">Posted ${timeAgo(job.createdAt)}</span><span class="tag">${job.applicants} applicant(s)</span></div>
+        <div class="info-list">
+          <div><span>Salary</span>${esc(job.salary)}</div>
+          <div><span>Experience</span>${esc(job.experience)}</div>
+          <div><span>Location</span>${esc(job.location)}</div>
+          <div><span>Skills</span>${esc(job.skills || "Not specified")}</div>
+        </div>
+        <h3 style="margin-bottom:8px">Job description</h3>
+        <p class="description">${esc(job.description)}</p>
+      </section>
+      <aside class="card" style="display:grid;gap:10px">${applyBox}</aside>
+    </div>
+  `;
+
+  const form = document.getElementById("applyForm");
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const errorBox = document.getElementById("applyError");
+      const phone = document.getElementById("phone").value.trim();
+      const coverLetter = document.getElementById("cover").value.trim();
+      errorBox.textContent = "";
+      if (!/^[0-9]{10}$/.test(phone)) { errorBox.textContent = "Enter a 10-digit phone number."; return; }
+      if (coverLetter.length < 10) { errorBox.textContent = "Write at least 10 characters about yourself."; return; }
+      const btn = form.querySelector("button");
+      btn.disabled = true;
+      try {
+        await api("/jobs/" + job.id + "/apply", { method: "POST", body: { phone: phone, coverLetter: coverLetter } });
+        toast("Application submitted!");
+        pageJob(job.id);
+      } catch (err) {
+        errorBox.textContent = err.message;
+        btn.disabled = false;
+      }
+    });
+  }
+}
+
+/* ---------- PAGE: Login ---------- */
+
+function pageLogin() {
+  if (currentUser) { go("#/dashboard"); return; }
+  app.innerHTML = `
+    <section class="card auth">
+      <h1>Welcome back</h1>
+      <p class="muted">Log in to apply for jobs or manage your job posts.</p>
+      <form id="loginForm">
+        <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+        <p class="error-msg" id="loginError"></p>
+        <button class="btn" type="submit">Login</button>
+      </form>
+      <p class="muted">No account? <a href="#/register">Register here</a></p>
+      <div class="demo-box">
+        Demo accounts (password <b>demo123</b>):<br>
+        Job seeker: seeker@demo.com<br>
+        Employer: employer@demo.com
+      </div>
+    </section>`;
+
+  document.getElementById("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const errorBox = document.getElementById("loginError");
+    errorBox.textContent = "";
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    try {
+      const data = await api("/login", {
+        method: "POST",
+        body: {
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value
+        }
+      });
+      setToken(data.token);
+      currentUser = data.user;
+      toast("Logged in as " + data.user.name);
+      go("#/dashboard");
+    } catch (err) {
+      errorBox.textContent = err.message;
+      btn.disabled = false;
+    }
+  });
+}
+
+/* ---------- PAGE: Register ---------- */
+
+function pageRegister() {
+  if (currentUser) { go("#/dashboard"); return; }
+  app.innerHTML = `
+    <section class="card auth">
+      <h1>Create an account</h1>
+      <p class="muted">Free for job seekers and employers.</p>
+      <form id="regForm">
+        <div class="role-pick">
+          <label><input type="radio" name="role" value="seeker" checked> I want a job</label>
+          <label><input type="radio" name="role" value="employer"> I want to hire</label>
+        </div>
+        <div class="field"><label for="name">Full name</label><input id="name" autocomplete="name" required></div>
+        <div class="field" id="companyField" hidden><label for="company">Company name</label><input id="company"></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="password">Password (min 6 characters)</label><input id="password" type="password" minlength="6" autocomplete="new-password" required></div>
+        <p class="error-msg" id="regError"></p>
+        <button class="btn" type="submit">Create account</button>
+      </form>
+      <p class="muted">Already registered? <a href="#/login">Login</a></p>
+    </section>`;
+
+  const companyField = document.getElementById("companyField");
+  document.querySelectorAll('input[name="role"]').forEach(r => {
+    r.addEventListener("change", () => {
+      companyField.hidden = document.querySelector('input[name="role"]:checked').value !== "employer";
+    });
+  });
+
+  document.getElementById("regForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const errorBox = document.getElementById("regError");
+    errorBox.textContent = "";
+    const body = {
+      role: document.querySelector('input[name="role"]:checked').value,
+      name: document.getElementById("name").value.trim(),
+      company: document.getElementById("company").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      password: document.getElementById("password").value
+    };
+    if (body.password.length < 6) { errorBox.textContent = "Password must be at least 6 characters."; return; }
+    if (body.role === "employer" && body.company.length < 2) { errorBox.textContent = "Enter your company name."; return; }
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    try {
+      const data = await api("/register", { method: "POST", body: body });
+      setToken(data.token);
+      currentUser = data.user;
+      toast("Account created. Welcome, " + data.user.name + "!");
+      go(data.user.role === "employer" ? "#/post-job" : "#/");
+    } catch (err) {
+      errorBox.textContent = err.message;
+      btn.disabled = false;
+    }
+  });
+}
+
+/* ---------- PAGE: Dashboard ---------- */
+
+async function pageDashboard() {
+  if (!currentUser) { go("#/login"); return; }
+  app.innerHTML = `<p class="loading">Loading dashboard...</p>`;
+
+  if (currentUser.role === "seeker") {
+    let apps = [];
+    try { apps = (await api("/my/applications")).applications; }
+    catch (e) { app.innerHTML = `<div class="card empty">${esc(e.message)}</div>`; return; }
+    const count = s => apps.filter(a => a.status === s).length;
+    app.innerHTML = `
+      <div class="dash-head">
+        <div><h1>My applications</h1><p class="muted">${esc(currentUser.name)} &middot; ${esc(currentUser.email)}</p></div>
+        <a class="btn" href="#/">Find more jobs</a>
+      </div>
+      <div class="summary">
+        <div class="card"><b>${apps.length}</b><span>Total applied</span></div>
+        <div class="card"><b>${count("Pending")}</b><span>Pending</span></div>
+        <div class="card"><b>${count("Shortlisted")}</b><span>Shortlisted</span></div>
+        <div class="card"><b>${count("Selected")}</b><span>Selected</span></div>
+      </div>
+      <div class="card">
+        ${apps.length ? `
+        <div class="table-wrap"><table>
+          <thead><tr><th>Job</th><th>Company</th><th>Applied</th><th>Status</th></tr></thead>
+          <tbody>${apps.map(a => `
+            <tr>
+              <td><a href="#/job/${a.jobId}">${esc(a.jobTitle)}</a></td>
+              <td>${esc(a.company)}<br><span class="muted">${esc(a.location)}</span></td>
+              <td>${timeAgo(a.createdAt)}</td>
+              <td><span class="status ${esc(a.status)}">${esc(a.status)}</span></td>
+            </tr>`).join("")}
+          </tbody>
+        </table></div>`
+        : `<div class="empty">You have not applied for any job yet. <a href="#/">Browse jobs</a></div>`}
+      </div>`;
+    return;
+  }
+
+  // Employer dashboard
+  let jobs = [];
+  try { jobs = (await api("/my/jobs")).jobs; }
+  catch (e) { app.innerHTML = `<div class="card empty">${esc(e.message)}</div>`; return; }
+  const totalApplicants = jobs.reduce((sum, j) => sum + j.applicants, 0);
+  app.innerHTML = `
+    <div class="dash-head">
+      <div><h1>${esc(currentUser.company)}</h1><p class="muted">Employer dashboard &middot; ${esc(currentUser.name)}</p></div>
+      <a class="btn" href="#/post-job">+ Post a new job</a>
+    </div>
+    <div class="summary">
+      <div class="card"><b>${jobs.length}</b><span>Jobs posted</span></div>
+      <div class="card"><b>${totalApplicants}</b><span>Total applicants</span></div>
+    </div>
+    <div class="card">
+      ${jobs.length ? `
+      <div class="table-wrap"><table>
+        <thead><tr><th>Job title</th><th>Location</th><th>Type</th><th>Applicants</th><th></th></tr></thead>
+        <tbody>${jobs.map(j => `
+          <tr>
+            <td><a href="#/job/${j.id}">${esc(j.title)}</a><br><span class="muted">Posted ${timeAgo(j.createdAt)}</span></td>
+            <td>${esc(j.location)}</td>
+            <td>${esc(j.type)}</td>
+            <td><b>${j.applicants}</b></td>
+            <td style="white-space:nowrap">
+              <a class="btn small outline" href="#/applicants/${j.id}">Applicants</a>
+              <button class="btn small danger" data-delete="${j.id}" type="button">Delete</button>
+            </td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>`
+      : `<div class="empty">You have not posted any job yet. <a href="#/post-job">Post your first job</a></div>`}
+    </div>`;
+
+  // Delete needs a second tap to confirm
+  app.querySelectorAll("[data-delete]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (btn.dataset.armed !== "1") {
+        btn.dataset.armed = "1";
+        btn.textContent = "Tap to confirm";
+        setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "Delete"; }, 3000);
+        return;
+      }
+      btn.disabled = true;
+      try {
+        await api("/jobs/" + btn.dataset.delete, { method: "DELETE" });
+        toast("Job deleted.");
+        pageDashboard();
+      } catch (e) {
+        toast(e.message, true);
+        btn.disabled = false;
+      }
+    });
+  });
+}
+
+/* ---------- PAGE: Post a job (employer) ---------- */
+
+function pagePostJob() {
+  if (!currentUser) { go("#/login"); return; }
+  if (currentUser.role !== "employer") {
+    app.innerHTML = `<div class="card empty">Only employer accounts can post jobs. <a href="#/">Browse jobs</a></div>`;
+    return;
+  }
+  app.innerHTML = `
+    <section class="card" style="max-width:760px;margin:0 auto">
+      <h1 style="font-size:24px">Post a new job</h1>
+      <p class="muted">Company: <b>${esc(currentUser.company)}</b></p>
+      <form id="jobForm" class="form-grid" style="margin-top:16px">
+        <div class="field full"><label for="title">Job title</label><input id="title" placeholder="e.g. PHP Developer" required></div>
+        <div class="field"><label for="location">Location</label><input id="location" placeholder="e.g. Jaipur or Remote" required></div>
+        <div class="field"><label for="jtype">Job type</label>
+          <select id="jtype"><option>Full-time</option><option>Part-time</option><option>Internship</option><option>Contract</option></select>
+        </div>
+        <div class="field"><label for="salary">Salary</label><input id="salary" placeholder="e.g. 3 - 5 LPA"></div>
+        <div class="field"><label for="experience">Experience</label><input id="experience" placeholder="e.g. 0-2 years"></div>
+        <div class="field full"><label for="skills">Skills required</label><input id="skills" placeholder="e.g. HTML, CSS, JavaScript"></div>
+        <div class="field full"><label for="description">Job description</label><textarea id="description" placeholder="Describe the role, responsibilities and requirements" required></textarea></div>
+        <p class="error-msg full" id="jobError"></p>
+        <div class="full"><button class="btn" type="submit">Publish job</button></div>
+      </form>
+    </section>`;
+
+  document.getElementById("jobForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const errorBox = document.getElementById("jobError");
+    errorBox.textContent = "";
+    const body = {
+      title: document.getElementById("title").value.trim(),
+      location: document.getElementById("location").value.trim(),
+      type: document.getElementById("jtype").value,
+      salary: document.getElementById("salary").value.trim(),
+      experience: document.getElementById("experience").value.trim(),
+      skills: document.getElementById("skills").value.trim(),
+      description: document.getElementById("description").value.trim()
+    };
+    if (body.description.length < 20) { errorBox.textContent = "Job description must be at least 20 characters."; return; }
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    try {
+      const data = await api("/jobs", { method: "POST", body: body });
+      toast("Job published!");
+      go("#/job/" + data.job.id);
+    } catch (err) {
+      errorBox.textContent = err.message;
+      btn.disabled = false;
+    }
+  });
+}
+
+/* ---------- PAGE: Applicants for one job (employer) ---------- */
+
+async function pageApplicants(jobId) {
+  if (!currentUser) { go("#/login"); return; }
+  app.innerHTML = `<p class="loading">Loading applicants...</p>`;
+  let data;
+  try { data = await api("/jobs/" + encodeURIComponent(jobId) + "/applications"); }
+  catch (e) {
+    app.innerHTML = `<a href="#/dashboard" class="back">&larr; Back to dashboard</a><div class="card empty">${esc(e.message)}</div>`;
+    return;
+  }
+  const options = ["Pending", "Shortlisted", "Selected", "Rejected"];
+  app.innerHTML = `
+    <a href="#/dashboard" class="back">&larr; Back to dashboard</a>
+    <div class="dash-head">
+      <div><h1>Applicants</h1><p class="muted">${esc(data.job.title)} &middot; ${esc(data.job.location)}</p></div>
+    </div>
+    <div class="card">
+      ${data.applications.length ? data.applications.map(a => `
+        <div class="applicant">
+          <div class="applicant-top">
+            <div>
+              <b>${esc(a.seekerName)}</b>
+              <p class="muted">${esc(a.seekerEmail)} &middot; ${esc(a.phone)} &middot; applied ${timeAgo(a.createdAt)}</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="status ${esc(a.status)}">${esc(a.status)}</span>
+              <select data-app="${a.id}" aria-label="Change status">
+                ${options.map(o => `<option ${o === a.status ? "selected" : ""}>${o}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+          <p class="note">${esc(a.coverLetter)}</p>
+        </div>`).join("")
+      : `<div class="empty">No one has applied yet. Share the job link to get applicants.</div>`}
+    </div>`;
+
+  app.querySelectorAll("select[data-app]").forEach(sel => {
+    sel.addEventListener("change", async () => {
+      try {
+        await api("/applications/" + sel.dataset.app, { method: "PATCH", body: { status: sel.value } });
+        toast("Status changed to " + sel.value);
+        pageApplicants(jobId);
+      } catch (e) {
+        toast(e.message, true);
+      }
+    });
+  });
+}
+
+/* ---------- Router ---------- */
+
+async function router() {
+  const hash = location.hash || "#/";
+  const parts = hash.replace(/^#\/?/, "").split("/");
+  renderNav();
+  window.scrollTo(0, 0);
+
+  if (parts[0] === "" ) return pageHome();
+  if (parts[0] === "job" && parts[1]) return pageJob(parts[1]);
+  if (parts[0] === "login") return pageLogin();
+  if (parts[0] === "register") return pageRegister();
+  if (parts[0] === "dashboard") return pageDashboard();
+  if (parts[0] === "post-job") return pagePostJob();
+  if (parts[0] === "applicants" && parts[1]) return pageApplicants(parts[1]);
+
+  app.innerHTML = `<div class="card empty">Page not found. <a href="#/">Go to home</a></div>`;
+}
+
+/* ---------- Reset demo data ---------- */
+
+let resetArmed = false;
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("resetBtn");
+  if (!resetArmed) {
+    resetArmed = true;
+    btn.textContent = "Tap again to reset";
+    setTimeout(() => { resetArmed = false; btn.textContent = "Reset demo data"; }, 3000);
+    return;
+  }
+  resetArmed = false;
+  btn.textContent = "Reset demo data";
+  await Backend.reset();
+  setToken("");
+  currentUser = null;
+  toast("Demo data reset.");
+  go("#/");
+});
+
+/* ---------- Start ---------- */
+
+async function start() {
+  if (getToken()) {
+    try {
+      currentUser = (await api("/me")).user;
+    } catch (e) {
+      setToken("");
+      currentUser = null;
+    }
+  }
+  window.addEventListener("hashchange", router);
+  router();
+}
+
+start();
+
+</script>
+</body>
+</html>
